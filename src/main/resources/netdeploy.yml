@@ -1,0 +1,154 @@
+openapi: "3.0.0"
+info:
+  title: Network Deployment API
+  version: 1.0.0
+
+tags:
+  - name: device
+    description: Operations regarding device
+  - name: topology
+    description: Operations regarding device topology
+
+paths:
+  /device:
+    post:
+      tags:
+        - device
+      description: Registers a new device to network deployment
+      operationId: registerDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceInput'
+      responses:
+        '201':
+          description: New device registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceOutput'
+        '400':
+          description: Invalid input provided
+        '409':
+          description: Device already exists
+        '422':
+          description: Device validation exception
+  /device/{macAddress}:
+    get:
+      tags:
+        - device
+      description: Find device by MAC address in network deployment
+      operationId: getDeviceByMacAddress
+      parameters:
+        - name: macAddress
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Device was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceOutput'
+        '404':
+          description: Device not found
+  /devices:
+    get:
+      tags:
+        - device
+      description: Get all devices in network deployment
+      operationId: getAllDevices
+      responses:
+        '200':
+          description: All devices retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceOutput'
+  /topologies:
+    get:
+      tags:
+        - topology
+      description: Get topology of all devices in network deployment
+      operationId: getTopology
+      responses:
+        '200':
+          description: Network deployment topology retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceNode'
+  /topology/{macAddress}:
+    get:
+      tags:
+        - topology
+      description: Get topology of device as root by MAC address
+      operationId: getTopologyByDevice
+      parameters:
+        - name: macAddress
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Device topology retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceNode'
+        '404':
+          description: Device not found
+
+components:
+  schemas:
+    DeviceInput:
+      required:
+        - macAddress
+        - deviceType
+        - uplinkMacAddress
+      type: object
+      properties:
+        macAddress:
+          type: string
+          description: MAC address of the network device
+        deviceType:
+          type: string
+          description: Network device type
+          enum:
+            - gateway
+            - switch
+            - point
+        uplinkMacAddress:
+          type: string
+          description: Uplinked network device MAC address
+    DeviceOutput:
+      type: object
+      properties:
+        macAddress:
+          type: string
+          description: MAC address of the network device
+        deviceType:
+          type: string
+          description: Network device type
+          enum:
+            - gateway
+            - switch
+            - point
+    DeviceNode:
+      type: object
+      properties:
+        macAddress:
+          type: string
+          description: MAC address of the network device
+        downlinkDevices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceNode'
