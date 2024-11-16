@@ -2,7 +2,7 @@ package com.rudolfs.netdeploy.controller;
 
 
 import com.rudolfs.netdeploy.data.DeviceNode;
-import com.rudolfs.netdeploy.service.DefaultDeviceService;
+import com.rudolfs.netdeploy.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TopologyController {
 
     @Autowired
-    private DefaultDeviceService defaultDeviceService;
+    private DeviceService deviceService;
 
     @GetMapping("/{macAddress}")
     public ResponseEntity<DeviceNode> getTopologyByDevice(@PathVariable("macAddress") String macAddress) {
-        DeviceNode deviceNode = defaultDeviceService.getTopologyByDevice(macAddress);
+        var deviceNode = deviceService.getTopologyByDevice(macAddress);
         return ResponseEntity.ok().body(deviceNode);
     }
 }

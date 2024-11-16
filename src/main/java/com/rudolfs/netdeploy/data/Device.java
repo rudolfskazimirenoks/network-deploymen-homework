@@ -7,13 +7,11 @@ public class Device implements Comparable<Device> {
 
     private String macAddress;
     private DeviceType deviceType;
-    private Device uplinkDevice;
     private List<Device> downlinkDevices;
 
-    public Device(String macAddress, DeviceType deviceType, Device uplinkDevice) {
+    public Device(String macAddress, DeviceType deviceType) {
         this.macAddress = macAddress;
         this.deviceType = deviceType;
-        this.uplinkDevice = uplinkDevice;
         downlinkDevices = new ArrayList<>();
     }
 
@@ -33,14 +31,10 @@ public class Device implements Comparable<Device> {
         return downlinkDevices;
     }
 
-    public Device getUplinkDevice() {
-        return uplinkDevice;
-    }
-
     @Override
     public int compareTo(Device otherDevice) {
-        DeviceType thisType = getDeviceType();
-        DeviceType otherType = otherDevice.getDeviceType();
+        var thisType = getDeviceType();
+        var otherType = otherDevice.getDeviceType();
 
         if (thisType.equals(otherType)) {
             return getMacAddress().compareTo(otherDevice.getMacAddress());

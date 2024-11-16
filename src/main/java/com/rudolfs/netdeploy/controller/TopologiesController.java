@@ -1,7 +1,7 @@
 package com.rudolfs.netdeploy.controller;
 
 import com.rudolfs.netdeploy.data.DeviceNode;
-import com.rudolfs.netdeploy.service.DefaultDeviceService;
+import com.rudolfs.netdeploy.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,11 @@ import java.util.List;
 public class TopologiesController {
 
     @Autowired
-    private DefaultDeviceService defaultDeviceService;
+    private DeviceService deviceService;
 
     @GetMapping()
     public ResponseEntity<List<DeviceNode>> getTopologies() {
-        List<DeviceNode> deviceNodes = defaultDeviceService.getTopologies();
+        var deviceNodes = deviceService.getTopologies();
         return ResponseEntity.ok().body(deviceNodes);
     }
 }

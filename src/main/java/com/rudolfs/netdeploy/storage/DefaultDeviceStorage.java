@@ -12,11 +12,11 @@ import java.util.stream.Stream;
 @Repository
 public class DefaultDeviceStorage implements DeviceStorage {
 
-    private List<Device> networkDeployment = new ArrayList<>();
+    private final List<Device> networkDeployment = new ArrayList<>();
 
     @Override
     public Device registerDevice(String macAddress, DeviceType deviceType, Device uplinkDevice) {
-        Device device = new Device(macAddress, deviceType, uplinkDevice);
+        var device = new Device(macAddress, deviceType);
         if (uplinkDevice == null) {
             networkDeployment.add(device);
             return device;
@@ -50,7 +50,7 @@ public class DefaultDeviceStorage implements DeviceStorage {
             return devices;
         }
 
-        List<Device> downlinkDevices = devices.stream()
+        var downlinkDevices = devices.stream()
                 .flatMap(device -> getAllDevices(device.getDownlinkDevices()).stream())
                 .toList();
 
@@ -59,11 +59,11 @@ public class DefaultDeviceStorage implements DeviceStorage {
     }
 
     private Optional<Device> findDevice(Device device, String macAddress) {
-        if (macAddress.equalsIgnoreCase(device.getMacAddress())) {
+        if (macAddress.equals(device.getMacAddress())) {
             return Optional.of(device);
         }
 
-        List<Device> downlinkDevices = device.getDownlinkDevices();
+        var downlinkDevices = device.getDownlinkDevices();
         if (downlinkDevices.isEmpty()) {
             return Optional.empty();
         }
